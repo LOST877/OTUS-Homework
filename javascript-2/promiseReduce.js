@@ -19,8 +19,7 @@ async function promiseReduce(asyncFunctions, reduce, initialValue) {
       return await promiseChain(promisesArr, iterator + 1, result);
     }
   }
-  const promiseRes = await promiseChain(asyncFunctions);
-  return promiseRes;
+  return await promiseChain(asyncFunctions);
 };
 
 promiseReduce([fn1, fn2], function (memo, value) {
