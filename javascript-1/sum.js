@@ -4,6 +4,8 @@ const sum = function (number) {
   }
   if (number) {
     this.sum += number;
+    return sum;
+  } else {
+    return this.sum;
   }
-  return this.sum;
 }
