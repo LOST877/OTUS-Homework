@@ -6,6 +6,8 @@ const sum = function (number) {
     this.sum += number;
     return sum;
   } else {
-    return this.sum;
+    const result = this.sum;
+    this.sum = 0;
+    return result;
   }
 }
