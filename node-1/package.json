@@ -1,0 +1,9 @@
+{
+  "name": "tree",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "tree": "node D:/GitHub/OTUS-Homework/node-1/tree.js"
+  }
+}
