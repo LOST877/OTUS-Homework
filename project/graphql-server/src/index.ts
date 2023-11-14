@@ -8,16 +8,17 @@ const typeDefs = `#graphql
   # This "Book" type defines the queryable fields for every book in our data source.
   type Movie {
     id: Int!
-    poster: String
-    title: String!
-    type: String
-    year: String
-    imdbid: String!
-    rate: Int!
+    Poster: String
+    Title: String!
+    Type: String
+    Year: String
+    imdbID: String!
+    Rate: Int!
   }
 
   type Query {
     movies: [Movie]
+    movieByImdbid(imdbID: String!): [Movie]
   }
 
   input AddMovieInput {
@@ -26,7 +27,7 @@ const typeDefs = `#graphql
     Type: String
     Year: String
     imdbID: String!
-    rate: Int!
+    Rate: Int!
   }
 
   input UpdateMovieRateInput {
@@ -35,7 +36,7 @@ const typeDefs = `#graphql
 
   type Mutation {
     AddMovie(content: AddMovieInput!): Movie
-    UpdateMovie(id: String!, content: UpdateMovieRateInput!): Movie
+    UpdateMovie(id: Int!, content: UpdateMovieRateInput!): Movie
   }
 `;
 const resolvers = {
@@ -43,20 +44,32 @@ const resolvers = {
     movies: async () => {
       const dataSource = new MovieDataSource();
       await dataSource.initializeDBConnection();
-      return await dataSource.getMovies();
+      const result = await dataSource.getMovies();
+      const movies = result.map((movie) => mapOutputMovie(movie));
+      return movies;
+    },
+    movieByImdbid: async (parent, { imdbID }, contextValue, info) => {
+      const dataSource = new MovieDataSource();
+      await dataSource.initializeDBConnection();
+      const result = await dataSource.getMovieByImdbid(imdbID);
+      const movies = result.map((movie) => mapOutputMovie(movie));
+      console.log(movies);
+      return movies;
     },
   },
   Mutation: {
-    UpdateMovie: async (parent, { content }, contextValue, info) => {
+    UpdateMovie: async (parent, { id, content }, contextValue, info) => {
       const dataSource = new MovieDataSource();
       await dataSource.initializeDBConnection();
-      return await dataSource.updateMovie(content);
+      const result = await dataSource.updateMovie(id, content);
+      return mapOutputMovie(result);
     },
-    AddMovie: async(parent, { content }, contextValue, info) => {
+    AddMovie: async (parent, { content }, contextValue, info) => {
       const dataSource = new MovieDataSource();
       await dataSource.initializeDBConnection();
-      return await dataSource.createMovie(content);
-    }
+      const result = await dataSource.createMovie(content);
+      return mapOutputMovie(result);
+    },
   },
 };
 const server = new ApolloServer({
@@ -122,25 +135,53 @@ class MovieDataSource {
       type: params.Type,
       title: params.Title,
       poster: params.Poster,
-      rate: params.rate,
+      rate: params.Rate,
     });
     return movie ? movie : null;
   }
 
   async getMovies() {
-    return await this.dbConnection.movies.findAll();
+    return await this.dbConnection.movies.findAll(
+      {
+        order: [['rate', 'ASC']],
+      }
+    );
   }
 
-  async updateMovie(params) {
-    await this.dbConnection.movies.update(
+  async getMovieByImdbid(id) {
+    const movie = await this.dbConnection.movies.findAll(
       {
-        rate: params.rate,
+        where: {
+          imdbid: id,
+        }
+      }
+    );
+    return movie;
+  }
+
+  async updateMovie(id, params) {
+    const movie = await this.dbConnection.movies.update(
+      {
+        rate: params.Rate,
       },
       {
         where: {
-          id: params.id,
+          id: id,
         },
       }
     );
+    return movie ? movie : null;
+  }
+}
+
+const mapOutputMovie = (output) => {
+  return {
+    Rate: output.dataValues.rate,
+    imdbID: output.dataValues.imdbid,
+    Poster: output.dataValues.poster,
+    Title: output.dataValues.title,
+    Type: output.dataValues.type,
+    Year: output.dataValues.year,
+    id: output.dataValues.id,
   }
 }

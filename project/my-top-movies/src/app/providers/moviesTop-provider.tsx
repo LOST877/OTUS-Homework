@@ -1,25 +1,24 @@
 'use client'
-import { createContext, Dispatch, SetStateAction, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
 import { MoviesState } from "../types";
 import {
   ApolloClient,
   InMemoryCache,
-  ApolloProvider,
   gql,
 } from "@apollo/client";
 
 export const defaultContext: MoviesState = {
-  loading: false,
+  loading: true,
   error: null,
   movies: [],
 };
 
-export const MoviesContext = createContext({
+export const MoviesTopContext = createContext({
   movies: defaultContext,
   setMovies: useState as Dispatch<SetStateAction<MoviesState>>,
 });
 
-export default function MoviesProvider({
+export default function MoviesTopProvider({
   children,
 }: {
   children: React.ReactNode;
@@ -29,26 +28,35 @@ export default function MoviesProvider({
     uri: "http://localhost:4000/",
     cache: new InMemoryCache(),
   });
-  client
-    .query({
-      query: gql`
-        query GetMovies {
-          movies {
-            rate
-            imdbid
-            poster
-            title
-            type
-            year
-            id
+  useEffect(() => {
+    client
+      .query({
+        query: gql`
+          query GetMovies {
+            movies {
+              imdbID
+              Poster
+              Title
+              Type
+              Year
+              id
+              Rate
+            }
           }
-        }
-      `,
-    })
-    .then((result) => console.log(result));
+        `,
+      })
+      .then(({ data }) => {
+        setMovies({
+          loading: false,
+          error: null,
+          movies: data.movies,
+        })
+      }
+      );
+  }, []);
   return (
-    <MoviesContext.Provider value={{ movies, setMovies }}>
+    <MoviesTopContext.Provider value={{ movies, setMovies }}>
       {children}
-    </MoviesContext.Provider>
+    </MoviesTopContext.Provider>
   );
 }

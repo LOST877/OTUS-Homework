@@ -4,6 +4,12 @@ export interface MovieShort {
   Type: string;
   Year: string;
   imdbID: string;
+  Rate?: number;
+  id?: number;
+}
+
+export interface MovieTopShort extends MovieShort {
+  id: number;
 }
 
 export interface MovieState {
@@ -55,3 +61,9 @@ export interface Movie extends MovieShort {
    Search: Array<MovieShort>;
    totalResults: string;
  }
+
+ export enum Routes {
+  TOP,
+  SEARCH,
+ }
+ 

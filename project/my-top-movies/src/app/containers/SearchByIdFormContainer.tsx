@@ -10,27 +10,26 @@ const SearchByIdFormContainer = ({
   params: { imdbID: string };
 }) => {
   const { movieById, setMovieById } = useContext(MovieByIdContext);
-  const searchMovieById = (imdbID: string) => {
+  const searchMovieById = async (imdbID: string) => {
     setMovieById({
       loading: true,
       error: null,
       movie: movieById.movie,
     });
-    return getById<OmdbGetByIdResponse>({ params })
-      .then((response) => {
-        setMovieById({
-          loading: false,
-          error: null,
-          movie: response,
-        });
-      })
-      .catch((error) => {
-        setMovieById({
-          loading: false,
-          error: error,
-          movie: movieById.movie,
-        });
+    try {
+      const response = await getById<OmdbGetByIdResponse>({ params });
+      setMovieById({
+        loading: false,
+        error: null,
+        movie: response,
       });
+    } catch(error) {
+      setMovieById({
+        loading: false,
+        error: error as Error,
+        movie: movieById.movie,
+      });
+    }
   };
 
   return <SearchForm onSearch={searchMovieById} imdbID={params.imdbID} />;

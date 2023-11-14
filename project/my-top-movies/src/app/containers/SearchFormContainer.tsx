@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { getByName } from '../api/routes';
+import { getByName } from '../api/route';
 import SearchForm from '../components/SearchForm/SearchForm'
 import { MoviesContext } from '../providers/movies-provider';
 import { OmdbSearchResponse } from '../types';

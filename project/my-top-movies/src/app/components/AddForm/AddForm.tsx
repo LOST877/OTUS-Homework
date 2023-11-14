@@ -6,9 +6,12 @@ const AddForm = () => {
   const ADD_MOVIE = gql`
     mutation AddMovie($content: AddMovieInput!) {
       AddMovie(content: $content) {
-        title
-        imdbid
-        rate
+        Title
+        imdbID
+        Rate
+        Year
+        Type
+        Poster
       }
     }
   `;
@@ -24,7 +27,7 @@ const AddForm = () => {
         addMovie({
           variables: {
             content: {
-              rate: input.value ? +input.value : null,
+              Rate: input.value ? +input.value : null,
               Title,
               imdbID,
               Year,

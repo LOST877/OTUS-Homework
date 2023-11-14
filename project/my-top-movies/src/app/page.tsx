@@ -1,8 +1,6 @@
 import React from "react";
-import MovieListView from "./views/MovieListView";
+import MovieTopListView from "./views/MovieTopListView";
 
 export default function Page() {
-  return (
-    <MovieListView />
-  );
+  return <MovieTopListView />;
 }
