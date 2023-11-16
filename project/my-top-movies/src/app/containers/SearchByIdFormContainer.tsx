@@ -3,13 +3,13 @@ import { getById } from '../details/[imdbID]/api/route';
 import { MovieByIdContext } from '../providers/movieById-provider';
 import { OmdbGetByIdResponse } from '../types';
 
-const SearchByIdFormContainer = ({
-  params,
-}: {
-  params: { imdbID: string };
-}) => {
+interface Props {
+  imdbID: string;
+}
+
+const SearchByIdFormContainer = (props: Props) => {
   const { movieById, setMovieById } = useContext(MovieByIdContext);
-  const { imdbID } = params;
+  const { imdbID } = props;
   const searchMovieById = async (imdbID: string) => {
     setMovieById({
       loading: true,
@@ -17,7 +17,7 @@ const SearchByIdFormContainer = ({
       movie: movieById.movie,
     });
     try {
-      const response = await getById<OmdbGetByIdResponse>({ params });
+      const response = await getById<OmdbGetByIdResponse>(imdbID);
       setMovieById({
         loading: false,
         error: null,

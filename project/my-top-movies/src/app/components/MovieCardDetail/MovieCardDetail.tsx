@@ -1,7 +1,6 @@
 
 import { useContext } from 'react';
 import { MovieByIdContext } from '../../providers/movieById-provider';
-import { Movie } from '../../types/index';
 import styles from './MovieCardDetail.module.css';
 
 const MovieCardDetail = () => {

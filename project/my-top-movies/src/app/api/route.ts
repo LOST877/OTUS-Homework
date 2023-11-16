@@ -2,7 +2,7 @@ import { OmdbErrorResponse, OmdbSuccessResponse } from "../types";
 import { objectToQueryString } from "../utils";
 
 const BASE_URL = "https://www.omdbapi.com";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY || "";
+const API_KEY = process.env.IMDB_API_KEY || "";
 
 export async function getByName<T extends OmdbSuccessResponse>({
   params,

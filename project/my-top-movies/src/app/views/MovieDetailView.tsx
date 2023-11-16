@@ -9,7 +9,12 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { RouteContext } from "../providers/routes-provider";
 import { Routes } from "../types";
 
-const MovieDetailView = ({ params }: { params: { imdbID: string } }) => {
+interface Props {
+  imdbID: string
+}
+
+const MovieDetailView = (props: Props) => {
+  const { imdbID } = props;
   const { movieById } = useContext(MovieByIdContext);
   const { fromRoute } = useContext(RouteContext);
   const client = new ApolloClient({
@@ -18,12 +23,12 @@ const MovieDetailView = ({ params }: { params: { imdbID: string } }) => {
   });
   return (
     <ApolloProvider client={client}>
-      <SearchByIdFormContainer params={params} />
+      <SearchByIdFormContainer imdbID={imdbID} />
       <div className="row py-3">
         <div className="col">
           <InfoBlock loading={movieById.loading} error={movieById.error} />
           {!movieById.loading && !movieById.error && (
-            <MovieCardContainer params={params} />
+            <MovieCardContainer imdbID={imdbID} />
           )}
         </div>
       </div>

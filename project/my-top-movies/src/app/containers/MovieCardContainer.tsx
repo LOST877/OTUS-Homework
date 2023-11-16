@@ -5,13 +5,18 @@ import { GET_MOVIE } from "../constants";
 import AddMovieContainer from "./AddMovieContainer";
 import DeleteMovieContainer from "./DeleteMovieContainer";
 
-const MovieCardContainer = ({ params }: { params: { imdbID: string } }) => {
+interface Props {
+  imdbID: string;
+}
+
+const MovieCardContainer = (props: Props) => {
+  const { imdbID } = props;
   const {
     data: queryData,
     loading: queryLoading,
     error: queryError,
   } = useQuery(GET_MOVIE, {
-    variables: { imdbID: params.imdbID },
+    variables: { imdbID },
   });
   
   return (
