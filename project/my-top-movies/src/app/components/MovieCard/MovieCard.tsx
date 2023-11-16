@@ -5,22 +5,16 @@ interface Props {
   movie: MovieShort;
 }
 
-const MovieCard = (props: Props) => (
-  <div className="card">
-    <img
-      src={props.movie.Poster}
-      alt={props.movie.Title}
-      className="card-img-top"
-    />
-    <div className="card-body">
-      <h5 className="card-title">{props.movie.Title}</h5>
-      <p className="card-text">{props.movie.Year}</p>
-      {props.movie.Rate &&
-        <p className="card-text">{props.movie.Rate} in top</p>
-      }
+const MovieCard = ({ movie }: Props) => (
+  <div className="card justify-content-between h-100">
+    <img src={movie.Poster} alt={movie.Title} className="card-img-top" />
+    <div className="card-body flex-grow-0">
+      <h5 className="card-title">{movie.Title}</h5>
+      <p className="card-text">{movie.Year}</p>
+      {movie.Rate && <p className="card-text">{movie.Rate} in top</p>}
       <Link
         href={{
-          pathname: `/details/${props.movie.imdbID}`,
+          pathname: `/details/${movie.imdbID}`,
         }}
         className="btn btn-primary"
       >

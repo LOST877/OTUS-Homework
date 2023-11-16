@@ -1,2 +1,6 @@
 @import "~reset.css/reset.css";
 @import "~bootstrap/dist/css/bootstrap.css";
+
+.wr-18 {
+  width: 18rem;
+}

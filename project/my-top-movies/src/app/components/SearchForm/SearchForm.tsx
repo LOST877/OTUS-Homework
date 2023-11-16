@@ -5,10 +5,8 @@ interface Props {
   imdbID?: string;
 }
 
-const SearchForm = (props: Props) => {
-  const { onSearch } = props;
-  const [query, setQuery] = React.useState('');
-  const { imdbID } = props;
+const SearchForm = ({ onSearch, imdbID }: Props) => {
+  const [query, setQuery] = React.useState("");
 
   const handleChange = React.useCallback((event: any) => {
     setQuery(event.target.value);
@@ -23,8 +21,7 @@ const SearchForm = (props: Props) => {
   );
 
   useEffect(() => {
-    if(imdbID)
-      onSearch(imdbID);
+    if (imdbID) onSearch(imdbID);
   }, []);
 
   return (

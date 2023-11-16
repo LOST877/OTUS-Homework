@@ -18,20 +18,20 @@ const MovieDetailView = ({ params }: { params: { imdbID: string } }) => {
   });
   return (
     <ApolloProvider client={client}>
+      <SearchByIdFormContainer params={params} />
       <div className="row py-3">
         <div className="col">
-          <SearchByIdFormContainer params={params} />
+          <InfoBlock loading={movieById.loading} error={movieById.error} />
+          {!movieById.loading && !movieById.error && (
+            <MovieCardContainer params={params} />
+          )}
         </div>
       </div>
-      {(movieById.loading || movieById.error) && (
-        <InfoBlock loading={movieById.loading} error={movieById.error} />
-      )}
-      <MovieCardContainer params={params} />
       <div className="row pb-3">
         <div className="d-flex justify-content-center">
           <Link
             href={{
-              pathname: fromRoute === Routes.SEARCH ? '/search' : '/',
+              pathname: fromRoute === Routes.SEARCH ? "/search" : "/",
             }}
             className="btn btn-primary"
           >

@@ -6,13 +6,17 @@ interface Props {
   error: Error | null;
 }
 
-const InfoBlock = (props: Props) => (
-  <div className="row py-3">
-    <div className="d-flex justify-content-center align-items-center">
-      {props.loading && <Spinner />}
-      {props.error && <ErrorMessage error={props.error} />}
-    </div>
-  </div>
+const InfoBlock = ({ loading, error }: Props) => (
+  <>
+    {(loading || error) && (
+      <div className="row py-3">
+        <div className="d-flex justify-content-center align-items-center">
+          {loading && <Spinner />}
+          {error && <ErrorMessage error={error} />}
+        </div>
+      </div>
+    )}
+  </>
 );
 
 export default InfoBlock;

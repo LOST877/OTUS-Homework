@@ -1,56 +1,36 @@
-import { gql, useQuery } from "@apollo/client";
-import { useContext } from "react";
-import AddForm from "../components/AddForm/AddForm";
-import DeleteButton from "../components/DeleteButton/DeleteButton";
+import { useQuery } from "@apollo/client";
+import InfoBlock from "../components/InfoBlock/InfoBlock";
 import MovieCardDetail from "../components/MovieCardDetail/MovieCardDetail";
-import { MovieByIdContext } from "../providers/movieById-provider";
+import { GET_MOVIE } from "../constants";
+import AddMovieContainer from "./AddMovieContainer";
+import DeleteMovieContainer from "./DeleteMovieContainer";
 
-const MovieCardContainer = ({
-  params,
-}: {
-  params: { imdbID: string };
-}) => {
-  const { movieById } = useContext(MovieByIdContext);
-  const GET_MOVIE = gql`
-    query MovieByImdbid($imdbID: String!) {
-      movieByImdbid(imdbID: $imdbID) {
-        id
-        Rate
-      }
-    }
-  `;
-  const { data, loading, error } = useQuery(GET_MOVIE, {
+const MovieCardContainer = ({ params }: { params: { imdbID: string } }) => {
+  const {
+    data: queryData,
+    loading: queryLoading,
+    error: queryError,
+  } = useQuery(GET_MOVIE, {
     variables: { imdbID: params.imdbID },
   });
-  const deleteMovie = () => {
-    console.log(data.movieByImdbid[0].id);
-  }
+  
   return (
     <>
-      {!movieById.loading && !movieById.error && (
+      <MovieCardDetail />
+      <InfoBlock loading={queryLoading} error={queryError as Error} />
+      {!queryLoading && !queryError && !!queryData?.movieByImdbid[0]?.Rate && (
         <>
-          <MovieCardDetail movie={movieById.movie} />
-          {!loading && !error && data?.movieByImdbid[0]?.Rate && (
-            <>
-              <div className="row py-3">
-                <p className="card-text w-auto mx-auto">
-                  {data?.movieByImdbid[0]?.Rate} in top
-                </p>
-              </div>
-              <div className="row pb-3">
-                <DeleteButton onDelete={deleteMovie} />
-              </div>
-            </>
-          )}
-          {!loading && !data?.movieByImdbid[0]?.Rate && (
-            <div className="row py-3">
-              <AddForm />
-            </div>
-          )}
+          <div className="row py-3">
+            <p className="card-text w-auto mx-auto">
+              {queryData?.movieByImdbid[0]?.Rate} in top
+            </p>
+          </div>
+          <DeleteMovieContainer movieId={queryData?.movieByImdbid[0]?.id} />
         </>
       )}
+      <AddMovieContainer isMovieInTop={!!queryData?.movieByImdbid[0]?.Rate} />
     </>
   );
-}
+};
 
 export default MovieCardContainer;

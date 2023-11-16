@@ -1,42 +1,21 @@
-import { gql, useMutation } from "@apollo/client";
-import { useContext } from "react";
-import { MovieByIdContext } from "../../providers/movieById-provider";
+import { FormEvent } from "react";
 
-const AddForm = () => {
-  const ADD_MOVIE = gql`
-    mutation AddMovie($content: AddMovieInput!) {
-      AddMovie(content: $content) {
-        Title
-        imdbID
-        Rate
-        Year
-        Type
-        Poster
-      }
-    }
-  `;
-  const { movieById } = useContext(MovieByIdContext);
-  const [addMovie, { data, loading, error }] = useMutation(ADD_MOVIE);
+interface Props {
+  onAdd: (input: HTMLInputElement) => void;
+}
+
+const AddForm = ({ onAdd }: Props) => {
   let input: HTMLInputElement;
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    onAdd(input);
+    input.value = "";
+  };
   return (
     <form
       className="d-flex justify-content-center w-auto mx-auto"
       onSubmit={(e) => {
-        e.preventDefault();
-        const { imdbID, Year, Type, Title, Poster } = movieById.movie;
-        addMovie({
-          variables: {
-            content: {
-              Rate: input.value ? +input.value : null,
-              Title,
-              imdbID,
-              Year,
-              Type,
-              Poster,
-            },
-          },
-        });
-        input.value = "";
+        handleSubmit(e);
       }}
     >
       <input
@@ -54,6 +33,6 @@ const AddForm = () => {
       </button>
     </form>
   );
-}
+};
 
 export default AddForm;

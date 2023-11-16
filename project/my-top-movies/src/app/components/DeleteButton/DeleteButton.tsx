@@ -2,16 +2,12 @@ interface Props {
   onDelete: () => void;
 }
 
-const DeleteButton = (props: Props) => {
-  const { onDelete } = props;
+const DeleteButton = ({ onDelete }: Props) => {
   const handleClick = () => {
     onDelete();
   };
   return (
-    <button
-      className="btn btn-primary mx-auto w-auto"
-      onClick={handleClick}
-    >
+    <button className="btn btn-primary mx-auto w-auto" onClick={handleClick}>
       Delete from top
     </button>
   );

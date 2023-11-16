@@ -37,6 +37,7 @@ const typeDefs = `#graphql
   type Mutation {
     AddMovie(content: AddMovieInput!): Movie
     UpdateMovie(id: Int!, content: UpdateMovieRateInput!): Movie
+    DeleteMovie(id: Int!): Movie
   }
 `;
 const resolvers = {
@@ -53,7 +54,6 @@ const resolvers = {
       await dataSource.initializeDBConnection();
       const result = await dataSource.getMovieByImdbid(imdbID);
       const movies = result.map((movie) => mapOutputMovie(movie));
-      console.log(movies);
       return movies;
     },
   },
@@ -70,6 +70,11 @@ const resolvers = {
       const result = await dataSource.createMovie(content);
       return mapOutputMovie(result);
     },
+    DeleteMovie: async (parent, { id }, contextValue, info) => {
+      const dataSource = new MovieDataSource();
+      await dataSource.initializeDBConnection();
+      return await dataSource.deleteMovie(id);
+    }
   },
 };
 const server = new ApolloServer({
@@ -141,11 +146,12 @@ class MovieDataSource {
   }
 
   async getMovies() {
-    return await this.dbConnection.movies.findAll(
+    const movies = await this.dbConnection.movies.findAll(
       {
         order: [['rate', 'ASC']],
       }
     );
+    return movies ? movies : null;
   }
 
   async getMovieByImdbid(id) {
@@ -156,7 +162,7 @@ class MovieDataSource {
         }
       }
     );
-    return movie;
+    return movie ? movie : null;
   }
 
   async updateMovie(id, params) {
@@ -171,6 +177,15 @@ class MovieDataSource {
       }
     );
     return movie ? movie : null;
+  }
+
+  async deleteMovie(id) {
+    await this.dbConnection.movies.destroy({
+      where: {
+        id
+      }
+    });
+    return null;
   }
 }
 

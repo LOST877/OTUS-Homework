@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import SearchForm from '../components/SearchForm/SearchForm';
+import { useContext, useEffect } from 'react';
 import { getById } from '../details/[imdbID]/api/route';
 import { MovieByIdContext } from '../providers/movieById-provider';
 import { OmdbGetByIdResponse } from '../types';
@@ -10,6 +9,7 @@ const SearchByIdFormContainer = ({
   params: { imdbID: string };
 }) => {
   const { movieById, setMovieById } = useContext(MovieByIdContext);
+  const { imdbID } = params;
   const searchMovieById = async (imdbID: string) => {
     setMovieById({
       loading: true,
@@ -31,8 +31,11 @@ const SearchByIdFormContainer = ({
       });
     }
   };
+  useEffect(() => {
+    if (imdbID) searchMovieById(imdbID);
+  }, []);
 
-  return <SearchForm onSearch={searchMovieById} imdbID={params.imdbID} />;
+  return <></>;
 };
 
 export default SearchByIdFormContainer;

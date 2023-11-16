@@ -1,23 +1,18 @@
 'use client'
-import SearchFormContainer from '../containers/SearchFormContainer';
-import InfoBlock from '../components/InfoBlock/InfoBlock';
-import { useContext } from 'react';
-import MovieList from '../components/MovieList/MovieList';
-import { MoviesTopContext } from '../providers/moviesTop-provider';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import MovieTopListContainer from '../containers/MovieTopListContainer';
 
 const MovieTopListView = () => {
-  const { movies } = useContext(MoviesTopContext);
+  const client = new ApolloClient({
+    uri: "http://localhost:4000/",
+    cache: new InMemoryCache(),
+  });
   return (
-    <>
+    <ApolloProvider client={client}>
       <div className="py-3">
-        {(movies.error || movies.loading) && (
-          <InfoBlock loading={movies.loading} error={movies.error} />
-        )}
-        {!movies.error && !movies.loading && (
-          <MovieList movies={movies.movies} />
-        )}
+        <MovieTopListContainer />
       </div>
-    </>
+    </ApolloProvider>
   );
 }
 
