@@ -1,8 +1,8 @@
 import { useContext } from 'react';
-import { getByName } from '../api/route';
 import SearchForm from '../components/SearchForm/SearchForm'
 import { MoviesContext } from '../providers/movies-provider';
 import { OmdbSearchResponse } from '../types';
+import { getByName } from '../utils';
 
 const SearchFormContainer = () => {
   const { movies, setMovies } = useContext(MoviesContext);
@@ -12,7 +12,10 @@ const SearchFormContainer = () => {
       error: null,
       movies: movies.movies
     });
-    return getByName<OmdbSearchResponse>({ params: { query, page: 1 } })
+    const get: Promise<OmdbSearchResponse> = getByName<OmdbSearchResponse>({
+      params: { query, page: 1 },
+    });
+    return get
       .then((response) => {
         setMovies({
           loading: false,

@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
-import { getById } from '../details/[imdbID]/api/route';
 import { MovieByIdContext } from '../providers/movieById-provider';
 import { OmdbGetByIdResponse } from '../types';
+import { getById } from '../utils';
 
 interface Props {
   imdbID: string;
